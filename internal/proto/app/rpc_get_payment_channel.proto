@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "github.com/handysuherman/clean-arch-payment-service/internal/pb";
+import "payment_channel.proto";
+
+message GetPaymentChannelRequest {
+    double amount = 1;
+    string payment_channel_name = 2;
+    string payment_channel_type = 3;
+}
+
+message GetPaymentChannelResponse {
+    PaymentChannel payment_channel = 1;
+}

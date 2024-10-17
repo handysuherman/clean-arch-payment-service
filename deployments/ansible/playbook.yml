@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: daemon-reload
+      systemd:
+        daemon_reload: true
+
+- hosts: constantinopel
+  gather_facts: no
+  become: true
+  roles:
+    - constantinopel

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "github.com/handysuherman/clean-arch-payment-service/internal/pb";
+import "payment_method.proto";
+
+message GetByIDPaymentRequest {
+    string payment_customer_id = 1;
+    string payment_method_id = 2;
+}
+
+message GetByIDPaymentResponse {
+    PaymentMethod payment_method = 1;
+}

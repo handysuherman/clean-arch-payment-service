@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["81d6fa93d9fe88c6148c-payment-prometheus:9090"]
+
+  - job_name: "system"
+    static_configs:
+      - targets: ["81d6fa93d9fe88c6148c-payment-node_exporter:9101"]
+
+  - job_name: "backend"
+    static_configs:
+      - targets: ["192.168.2.119:38488"]
+      - targets: ["192.168.2.119:10506"]

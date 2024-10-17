@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/handysuherman/clean-arch-payment-service/internal/pb";
+import "payment_method.proto";
+import "customer.proto";
+
+message CreatePaymentRequest {
+    optional string customer_uid = 1;
+    string customer_name = 2;
+    string customer_phone_number = 3;
+    
+    string payment_description = 4;
+    string payment_reference_id = 6;
+    double payment_amount = 7;
+    string payment_type = 8;
+    string payment_channel = 9;
+
+    int64 expiry_hour = 10;
+    string payment_success_return_url = 11;
+    string payment_failure_return_url = 12;
+
+    string x_idempotency_key = 13;
+}
+
+message CreatePaymentResponse {
+    Customer customer = 1;
+    PaymentMethod payment_method = 2;
+}

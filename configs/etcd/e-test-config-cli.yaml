@@ -1,0 +1,11 @@
+yaml-file: "./configs/etcd/e-test-config.yaml"
+tls-root-level: "tls"
+db-root-level: "databases"
+etcd-tls-enabled: true
+etcd-ca-cert: "./tls/etcd/ca-cert.pem"
+etcd-cert: "./tls/etcd/client-cert.pem"
+etcd-key: "./tls/etcd/client-key.pem"
+etcd-hosts: "https://constantinopel.7102367be97ad5c0ae00abe40f-kv-s.server:14262"
+etcd-prefix: "configurations/81d6fa93d9fe88c6148c-payment/tests"
+output: true
+output-file-path: "./etcd-config.yaml"

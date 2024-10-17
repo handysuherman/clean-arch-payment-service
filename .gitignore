@@ -1,0 +1,14 @@
+*.pem
+*.out
+e-prod-config-cli.yaml
+e-prod-config.yaml
+etcd-config.yaml
+docker-compose.yml
+/node_modules
+/certs
+/public
+/bin
+/data
+/profiles
+/pdfs
+/files

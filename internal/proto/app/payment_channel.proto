@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "github.com/handysuherman/clean-arch-payment-service/internal/pb";
+
+message PaymentChannel {
+    string uid = 1;
+    string payment_channel_name = 2;
+    string payment_channel_type = 3;
+    string payment_logo_src = 4;
+    double min_amount = 5;
+    double max_amount = 6;
+    double tax = 7;
+    bool is_tax_percentage = 8;
+    bool is_active = 9;
+    bool is_available = 10;
+}

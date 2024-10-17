@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  {{ app_id }}-app-1:
+    image: {{ docker_image }}
+    command: >
+      /app/main --config-file=/app/config-cli.yaml
+      --etcd-timeout=15s
+      --env=develop
+      --hostname={{ app_hostname }}
+      --uid={{ uid_1 }}
+      --published-port={{ published_app_port_1 }}
+      --health-check-addr={{ app_ip }}
+      --health-check-published-port={{ published_probes_port_1 }}
+    restart: always
+    volumes:
+      - ./etcd-config.yaml:/app/config-cli.yaml
+      - ./tls:/app/tls
+    networks:
+      - wikan-network
+    ports:
+      - "{{ published_app_port_1 }}:50050"
+      - "{{ published_probes_port_1 }}:6880"
+    extra_hosts:
+      - "constantinopel.7102367be97ad5c0ae00abe40f-kv-s.server:5.181.217.12"
+      - "constantinopel.{{ app_id }}-pqsql-s.server:192.168.2.119"
+      - "constantinopel.{{ app_id }}-redis-s.server:192.168.2.119"
+      - "constantinopel.{{ app_id }}-consul-s.server:192.168.2.119"
+      - "constantinopel-1.kafka.server:5.181.217.12"
+networks:
+  wikan-network:
+    external: true

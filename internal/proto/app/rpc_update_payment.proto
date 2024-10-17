@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "github.com/handysuherman/clean-arch-payment-service/internal/pb";
+import "google/protobuf/timestamp.proto";
+
+message UpdatePaymentRequest {
+    string payment_event = 1;
+    string payment_type = 2;
+    string payment_customer_id = 3;
+    string payment_method_id = 4;
+    string payment_business_id = 5;
+    string payment_channel = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    string payment_status = 8;
+    optional string payment_failure_code = 9;
+}
+
+message UpdatePaymentResponse {}

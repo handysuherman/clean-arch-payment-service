@@ -1,0 +1,23 @@
+[ req ]
+prompt = no
+distinguished_name = dn
+default_md = sha384
+default_bits = 384
+req_extensions = v3_req
+
+[ dn ]
+countryName = ID
+organizationName = WikanProduction
+localityName = Denpasar
+commonName = wikan-email-server-client
+
+[ v3_req ]
+subjectKeyIdentifier = hash
+basicConstraints = CA:FALSE
+nsComment = "OpenSSL Generated Certificate"
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth, clientAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = *.81d6fa93d9fe88c6148c-payment-c.client

@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  {{ app_id }}-prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_{{ app_id }}
+    restart: always
+    ports:
+      - "{{ published_prometheus_server }}:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - w-lsp_welsp-network
+  {{ app_id }}-node_exporter:
+    container_name: node_exporter_container_{{ app_id }}
+    restart: always
+    image: prom/node-exporter
+    ports:
+      - '{{ published_node_exporter_port }}:9100'
+    networks:
+      - w-lsp_welsp-network
+  {{ app_id }}-grafana:
+    container_name: grafana_container_{{ app_id }}
+    restart: always
+    image: grafana/grafana
+    ports:
+      - '{{ published_grafana_port }}:3000'
+    networks:
+      - w-lsp_welsp-network
+  {{ app_id }}-jaeger:
+    container_name: jaeger_container_{{ app_id }}
+    restart: always
+    image: jaegertracing/all-in-one:1.35
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - "{{ published_jaeger_udp_port }}:6831/udp"
+      - "{{ published_jaeger_ui_port }}:16686"
+    networks:
+      - w-lsp_welsp-network
+networks:
+  w-lsp_welsp-network:
+    external: true

@@ -1,0 +1,36 @@
+docker_image: docker-registry.local:24115/wisata-desa-payment-backend:latest
+app_directory: ~/wikan-general/backend/81d6fa93d9fe88c6148c-payment
+makefile_template_file: makefile.j2
+compose1_template_file: docker-compose.j2
+compose2_template_file: docker-compose-2.j2
+monitoring_compose_template_file: monitoring-compose.j2
+
+uid_1: f4G1zq16gs9R6448owrj2f42X2t21T
+uid_2: 66K845n9VpQgr19HnW637NK836KU2f
+app_id: 81d6fa93d9fe88c6148c-payment
+app_name: fr_81d6fa93d9fe88c6148c-payment
+app_hostname: constantinopel.81d6fa93d9fe88c6148c-payment-s.server
+app_ip: 192.168.2.119
+
+published_app_port_1: 54057
+published_app_port_2: 24296
+log_level: debug
+environment: production
+http_addr: 0.0.0.0:5000
+cors: https://barakat.fun
+ignore_log_url: metrics
+
+probes_check_interval: 10
+published_probes_port_1: 9904
+published_probes_port_2: 13445
+published_probes_pprof: 7705
+
+published_jaeger_udp_port: 27767
+published_jaeger_ui_port: 45932
+
+published_prometheus_port_1: 38488
+published_prometheus_port_2: 10507
+published_prometheus_server: 34359
+
+published_node_exporter_port: 57319
+published_grafana_port: 36859

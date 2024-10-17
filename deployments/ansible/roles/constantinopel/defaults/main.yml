@@ -1,0 +1,8 @@
+general_owner: root
+general_group: root
+file_mode: 0644
+cert_file_mode: 0600
+docker_compose_filename_1: app-1.yml
+docker_compose_filename_2: app-2.yml
+monitoring_compose_file_name: monitoring.yml
+makefile_filename: Makefile

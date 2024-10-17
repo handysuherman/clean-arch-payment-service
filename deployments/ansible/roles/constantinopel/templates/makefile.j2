@@ -1,0 +1,98 @@
+.PHONY: launch
+launch: launch1 launch2 publish
+
+.PHONY: publish
+publish:
+	ufw allow from 192.168.18.0/24 to any port {{ published_probes_port_1 }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_probes_port_2 }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_probes_pprof }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_prometheus_port_1 }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_prometheus_port_2 }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_prometheus_server }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_node_exporter_port }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_grafana_port }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_app_port_1 }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_app_port_2 }} proto tcp || true
+	ufw allow from 192.168.18.0/24 to any port {{ published_jaeger_ui_port }} proto tcp || true
+	ufw allow {{ published_jaeger_udp_port }}/udp || true
+	ufw allow from 5.181.217.12 to any port {{ published_app_port_1 }} proto tcp || true
+	ufw allow from 5.181.217.12 to any port {{ published_app_port_2 }} proto tcp || true
+
+.PHONY: launch1
+launch1: compose_stop1 compose_pull1 clean1 compose_up1
+
+.PHONY: compose_stop1
+compose_stop1:
+	docker compose -f app-1.yml stop
+	docker compose -f app-1.yml down
+	sleep 3
+
+.PHONY: compose_start
+compose_start:
+	docker compose -f app-1.yml start
+
+.PHONY: compose_pull1
+compose_pull1:
+	docker compose -f app-1.yml pull
+
+.PHONY: clean1
+clean1:
+	docker images --quiet --filter=dangling=true | xargs --no-run-if-empty docker rmi --force || true
+
+.PHONY: compose_up1
+compose_up1:
+	docker compose -f app-1.yml down
+	sleep 3
+	docker compose -f app-1.yml up -d
+
+.PHONY: launch2
+launch2: compose_stop2 compose_pull2 clean2 compose_up2
+
+.PHONY: compose_stop2
+compose_stop2:
+	docker compose -f app-2.yml stop
+	docker compose -f app-2.yml down
+	sleep 3
+
+.PHONY: compose_start
+compose_start:n
+	docker compose -f app-2.yml start
+
+.PHONY: compose_pull2
+compose_pull2:
+	docker compose -f app-2.yml pull
+
+.PHONY: clean2
+clean2:
+	docker images --quiet --filter=dangling=true | xargs --no-run-if-empty docker rmi --force || true
+
+.PHONY: compose_up2
+compose_up2:
+	docker compose -f app-2.yml down
+	sleep 3
+	docker compose -f app-2.yml up -d
+
+.PHONY: launch_monitoring
+launch_monitoring: compose_stop_monitoring compose_pull_monitoring clean_monitoring compose_up_monitoring
+
+.PHONY: compose_stop_monitoring
+compose_stop_monitoring:
+	docker compose -f monitoring.yml stop
+	docker compose -f monitoring.yml down
+	sleep 3
+
+.PHONY: compose_start
+compose_start:
+	docker compose -f monitoring.yml start
+
+.PHONY: compose_pull_monitoring
+compose_pull_monitoring:
+	docker compose -f monitoring.yml pull
+
+.PHONY: clean_monitoring
+clean_monitoring:
+	docker images --quiet --filter=dangling=true | xargs --no-run-if-empty docker rmi --force || true
+
+.PHONY: compose_up_monitoring
+compose_up_monitoring:
+	docker compose -f monitoring.yml up -d

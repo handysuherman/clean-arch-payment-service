@@ -1,0 +1,85 @@
+- name: Create Directories if they don't exist
+  tags:
+    - app
+    - certs
+  file:
+    path: "{{ item.src }}"
+    state: directory
+    owner: "{{ general_owner }}"
+    group: "{{ general_group }}"
+    mode: "{{ item.mode }}"
+    modification_time: preserve
+    access_time: preserve
+  loop:
+    - { src: "{{ app_directory }}", mode: 600 }
+    - { src: "{{ app_directory }}/monitoring", mode: 655 }
+    - { src: "{{ app_directory }}/tls", mode: 600 }
+    - { src: "{{ app_directory }}/tls/pqsql", mode: 600 }
+
+- name: Create Files if they don't exist
+  tags:
+    - app
+    - certs
+  file:
+    path: "{{ item }}"
+    state: touch
+    owner: "{{ general_owner }}"
+    group: "{{ general_group }}"
+    mode: "{{ file_mode }}"
+    modification_time: preserve
+    access_time: preserve
+  loop:
+    - "{{ app_directory }}/{{ docker_compose_filename_1 }}"
+    - "{{ app_directory }}/{{ docker_compose_filename_2 }}"
+    - "{{ app_directory }}/{{ monitoring_compose_file_name }}"
+    - "{{ app_directory }}/{{ makefile_filename }}"
+
+- name: Copy Templates
+  tags:
+    - app
+    - certs
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ general_owner }}"
+    group: "{{ general_group }}"
+    mode: "{{ file_mode }}"
+  loop:
+    - { src: "{{ compose1_template_file }}", dest: "{{ app_directory }}/{{ docker_compose_filename_1 }}" }
+    - { src: "{{ compose2_template_file }}", dest: "{{ app_directory }}/{{ docker_compose_filename_2 }}" }
+    - { src: "{{ monitoring_compose_template_file }}", dest: "{{ app_directory }}/{{ monitoring_compose_file_name }}" }
+    - { src: "{{ makefile_template_file }}", dest: "{{ app_directory }}/{{ makefile_filename }}" }
+
+- name: Copy Certs
+  tags:
+    - app
+    - certs
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ general_owner }}"
+    group: "{{ general_group }}"
+    mode: "{{ item.mode }}"
+    backup: yes
+  loop:
+    - { src: "prometheus.yml", dest: "{{ app_directory }}/monitoring/prometheus.yml", mode: 655 }
+    - { src: "etcd-config.yaml", dest: "{{ app_directory }}/etcd-config.yaml", mode: 600 }
+    - { src: "pq-ca-cert.pem", dest: "{{ app_directory }}/tls/pqsql/ca-cert.pem", mode: 600 } 
+    - { src: "pq-client-cert.pem", dest: "{{ app_directory }}/tls/pqsql/client-cert.pem", mode: 600 }
+    - { src: "pq-client-key.pem", dest: "{{ app_directory }}/tls/pqsql/client-key.pem", mode: 600 }
+
+- name: launch-app
+  tags:
+    - app
+  make:
+    chdir: "{{ app_directory }}"
+    target: launch
+    file: "{{ app_directory }}//{{ makefile_filename }}"
+
+# - name: launch-monitoring
+#   tags:
+#     - app
+#   make:
+#     chdir: "{{ app_directory }}"
+#     target: launch_monitoring
+#     file: "{{ app_directory }}//{{ makefile_filename }}"

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "github.com/handysuherman/clean-arch-payment-service/internal/pb";
+
+import "rpc_create_payment.proto";
+import "rpc_get_by_id_payment.proto";
+import "rpc_get_payment_channels.proto";
+import "rpc_get_payment_channel.proto";
+
+service PaymentService {
+    rpc Create(CreatePaymentRequest) returns (CreatePaymentResponse);
+    rpc GetByID(GetByIDPaymentRequest) returns (GetByIDPaymentResponse);
+    rpc GetChannel(GetPaymentChannelRequest) returns (GetPaymentChannelResponse);
+    rpc GetAvailableChannels(GetPaymentChannelsRequest) returns (GetPaymentChannelsResponse);
+}

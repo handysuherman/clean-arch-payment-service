@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7.2.2-alpine
+    restart: always
+    command: /bin/sh -c "redis-server --requirepass secret"
+    ports:
+      - "52946:6379"
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=mock_db
+    ports:
+      - 50241:5432

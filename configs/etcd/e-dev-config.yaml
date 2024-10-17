@@ -1,0 +1,130 @@
+services:
+  internal:
+    id: 2f47cd0f77936e409ff6d3ca49a5af0828cbb3f6
+    name: be_77936e409ff6d3ca49a5af0828cbb3f6
+    dns: be_77936e409ff6d3ca49a5af0828cbb3f6.server
+    logLevel: debug
+    environment: develop
+    enableTLS: false
+    operationTimeout: 15s
+    platformKeys:
+      mobile: 8feebf5449a66e3b7f7da7be3a71421c3fac62078227dbf9c66a850237b19191
+      website: 13e198a47c7500e49e665eae57d526ef31f02a7307e9f58619a7f8266344932c
+    paymentGatewayKeys:
+      development: xnd_development_ZJzlMpf7L8PKyWGL1nM2X2iVCNLea5NwECa8Vwm9Sa9sXGRw0buB5dxIOfa0N
+      production: xnd_development_ZJzlMpf7L8PKyWGL1nM2X2iVCNLea5NwECa8Vwm9Sa9sXGRw0buB5dxIOfa0N
+    addr: "0.0.0.0"
+    port: 50050
+  external:
+    payment_gateway:
+      id: "gw_77936e409ff6d3ca49a5af0828cbb3f6"
+      name: "gw_77936e409ff6d3ca49a5af0828cbb3f6"
+monitoring:
+  probes:
+    readinessPath: /ready
+    livenessPath: /live
+    checkInterval: 10
+    port: :6880
+    pprof: :7880
+    prometheus:
+      port: :8880
+      path: /metrics
+  jaeger:
+    hostPort: 0.0.0.0:6831
+    enable: true
+    logSpan: true
+databases:
+  postgresql:
+    driver: "postgres"
+    source: "pgx://81d6fa93d9fe88c6148c-payment-pqsql-c-client:secret@constantinopel.81d6fa93d9fe88c6148c-payment-pqsql-s.server:5432/payment_db?sslmode=disable"
+    tlsSource: "pgx://81d6fa93d9fe88c6148c-payment-pqsql-c-client:secret@constantinopel.81d6fa93d9fe88c6148c-payment-pqsql-s.server:5432/payment_db?sslmode=verify-ca"
+    username: 81d6fa93d9fe88c6148c-payment-pqsql-c-client
+    password: secret
+    host: constantinopel.81d6fa93d9fe88c6148c-payment-pqsql-s.server
+    port: 5432
+    dbName: payment_db
+    migrationURL: "file://migration"
+    enableTLS: true
+    ca: "./tls/pqsql-copy/ca-cert.pem"
+    cert: "./tls/pqsql-copy/client-cert.pem"
+    key: "./tls/pqsql-copy/client-key.pem"
+  redis:
+    servers:
+      - "constantinopel.81d6fa93d9fe88c6148c-payment-redis-s.server:6379"
+    db: 0
+    password: c80990ae94e5e87d9d1061ecdf6c7650
+    poolSize: 300
+    appID: 77936e409ff6d3ca49a5af0828cbb3f6
+    enableTLS: true
+    prefixes:
+      create_payment:
+        prefix: create_payment
+        expirationDuration: 24h
+      customer:
+        prefix: customer
+        expirationDuration: 24h
+      payment:
+        prefix: payment
+        expirationDuration: 96h
+brokers:
+  kafka:
+    config:
+      groupID: "a08b1ec24cac767fae57f0ae"
+      initTopics: true
+      enableTLS: true
+      brokers:
+        - "constantinopel-1.kafka.server:21702"
+        - "constantinopel-1.kafka.server:21702"
+        - "constantinopel-1.kafka.server:21702"
+    topics:
+      payment_status_update:
+        topicName: "payment_status_update"
+        partitions: 6
+        replicationFactor: 1
+      payment_status_updated:
+        topicName: "payment_status_updated"
+        partitions: 6
+        replicationFactor: 1
+service_discovery:
+  consul:
+    internal:
+      register: true
+      scheme: "grpc-mtls"
+      serviceName: "grpc-payment-backend"
+      host: "https://constantinopel.81d6fa93d9fe88c6148c-payment-consul-s.server:8501"    
+      enableTLS: true
+      timeout: 15s
+      interval: 10s
+      deregisterCriticalServiceAfter: 40s
+    external:
+      payment:
+        scheme: "grpc-mtls"
+        serviceName: "grpc-payment-backend"
+        host: "constantinopel.81d6fa93d9fe88c6148c-payment-consul-s.server"    
+        enableTLS: true
+        useCache: true
+        maxAge: 30s
+        staleIfError: 15s
+        waitTime: 15s
+        requireConsistent: true
+tls:
+  app:
+    ca: "./tls/pqsql-copy/ca-cert.pem"
+    cert: "./tls/pqsql-copy/server-cert.pem"
+    key: "./tls/pqsql-copy/server-key.pem"
+  consul:
+    ca: "./tls/consul/ca-cert.pem"
+    cert: "./tls/consul/client-cert.pem"
+    key: "./tls/consul/client-key.pem"
+  postgresql:
+    ca: "./tls/pqsql-copy/ca-cert.pem"
+    cert: "./tls/pqsql-copy/client-cert.pem"
+    key: "./tls/pqsql-copy/client-key.pem"
+  redis:
+    ca: "./tls/redis/ca-cert.pem"
+    cert: "./tls/redis/client-cert.pem"
+    key: "./tls/redis/client-key.pem"
+  kafka:
+    ca: "./tls/kafka/ca-cert.pem"
+    cert: "./tls/kafka/client-cert.pem"
+    key: "./tls/kafka/client-key.pem"
